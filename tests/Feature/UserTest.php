@@ -43,6 +43,30 @@ class UserTest extends TestCase
             ]);
     }//testUserCreation
 
+    public function testUserLogin()
+    {
+        $name = $this->faker->name();
+       	$email = $this->faker->email();
+
+        $user = new User([
+            'name' => $name,
+            'email' => $email,
+            'password' => bcrypt($this->password)
+        ]);        
+        
+        $user->save();     
+        
+        $response = $this->postJson('/api/auth/login', [
+            'email' => $email,
+            'password' => $this->password
+        ]);
+
+        var_dump($response->getContent());
+            
+        $response->assertStatus(200);
+        $this->assertAuthenticated();
+    }//testUserLogin
+
     
     
 }
